@@ -13,6 +13,7 @@ function day2Algorithm() {
     parseInput();
     var maxDist = 3;
     var minDist = 1;
+    var accum = 0;
     fileRows.forEach(function (r) {
         var desc = r[0] - r[1] < 0;
         var safe = true;
@@ -24,13 +25,9 @@ function day2Algorithm() {
             if (diff < 1 || diff > 3)
                 safe = false;
         }
-        safeReports.push(safe);
-    });
-    var accum = 0;
-    for (var i = 0; i < safeReports.length; ++i) {
-        if (safeReports[i])
+        if (safe)
             accum++;
-    }
+    });
     console.log(accum);
 }
 day2Algorithm();
