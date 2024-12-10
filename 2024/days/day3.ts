@@ -43,32 +43,14 @@ function day3Algorithm2(): void {
   let isOn = true;
   let flagStep = false;
   lines.forEach((l) => {
-    let start = l.search(/mul\([0-9]+,[0-9]+\)/);
+    let start = -1;
     let lenInBaseStr = 0;
-    let end = l.indexOf(")", start) + 1;
+    let end = 0;
     let subStr = l;
-    let changeOnState_Do = subStr.indexOf("do()");
-    let changeOnState_Dont = subStr.indexOf("don't()");
+    let changeOnState_Do = -1;
+    let changeOnState_Dont = -1;
 
-    if (changeOnState_Do < start && changeOnState_Do != -1) {
-      start = changeOnState_Do;
-      end = start + 4;
-      isOn = true;
-      flagStep = true;
-    }
-    if (changeOnState_Dont < start && changeOnState_Dont != -1) {
-      start = changeOnState_Dont;
-      end = start + 7;
-      isOn = false;
-      flagStep = true;
-    }
-
-    while (start != -1) {
-      if (isOn && !flagStep) {
-        accum += parseStrForResult(
-          l.substring(lenInBaseStr + start, lenInBaseStr + end)
-        );
-      }
+    while (true) {
       flagStep = false;
       lenInBaseStr += end;
       subStr = l.substring(lenInBaseStr);
@@ -88,6 +70,13 @@ function day3Algorithm2(): void {
         end = start + 7;
         isOn = false;
         flagStep = true;
+      }
+
+      if (start == -1) break;
+      if (isOn && !flagStep) {
+        accum += parseStrForResult(
+          l.substring(lenInBaseStr + start, lenInBaseStr + end)
+        );
       }
     }
   });

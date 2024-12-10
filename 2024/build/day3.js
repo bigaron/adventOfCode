@@ -36,28 +36,13 @@ function day3Algorithm2() {
     var isOn = true;
     var flagStep = false;
     lines.forEach(function (l) {
-        var start = l.search(/mul\([0-9]+,[0-9]+\)/);
+        var start = -1;
         var lenInBaseStr = 0;
-        var end = l.indexOf(")", start) + 1;
+        var end = 0;
         var subStr = l;
-        var changeOnState_Do = subStr.indexOf("do()");
-        var changeOnState_Dont = subStr.indexOf("don't()");
-        if (changeOnState_Do < start && changeOnState_Do != -1) {
-            start = changeOnState_Do;
-            end = start + 4;
-            isOn = true;
-            flagStep = true;
-        }
-        if (changeOnState_Dont < start && changeOnState_Dont != -1) {
-            start = changeOnState_Dont;
-            end = start + 7;
-            isOn = false;
-            flagStep = true;
-        }
-        while (start != -1) {
-            if (isOn && !flagStep) {
-                accum += parseStrForResult(l.substring(lenInBaseStr + start, lenInBaseStr + end));
-            }
+        var changeOnState_Do = -1;
+        var changeOnState_Dont = -1;
+        while (true) {
             flagStep = false;
             lenInBaseStr += end;
             subStr = l.substring(lenInBaseStr);
@@ -76,6 +61,11 @@ function day3Algorithm2() {
                 end = start + 7;
                 isOn = false;
                 flagStep = true;
+            }
+            if (start == -1)
+                break;
+            if (isOn && !flagStep) {
+                accum += parseStrForResult(l.substring(lenInBaseStr + start, lenInBaseStr + end));
             }
         }
     });
