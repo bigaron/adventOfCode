@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var fs = require('fs');
-var file = fs.readFileSync('2024/input/day1Input.txt');
+var fs = require("fs");
+var file = fs.readFileSync("2024/input/day1Input.txt");
 var inputStr = "";
 var input = new Array();
 var parseInput = function () {
@@ -26,5 +26,13 @@ var day1Algorithm = function () {
     }
     return distance;
 };
-console.log(day1Algorithm());
+function day1Algorithm2() {
+    parseInput();
+    var simScore = 0;
+    input[0].forEach(function (v) {
+        simScore += v * input[1].filter(function (v2) { return v2 == v; }).length;
+    });
+    console.log(simScore);
+}
+day1Algorithm2();
 //# sourceMappingURL=day1.js.map
