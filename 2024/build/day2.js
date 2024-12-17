@@ -1,66 +1,38 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var fs = require("fs");
-var file = fs.readFileSync("2024/input/day2Test.txt");
-var fileRows = new Array();
-var safeReports = new Array();
+var file = fs.readFileSync("2024/input/day2Input.txt");
 function parseInput() {
-    file
+    var result = new Array();
+    result = file
         .toString()
         .split(/\r?\n/)
-        .forEach(function (r) {
-        fileRows.push(r.split(/\s+/).map(function (v) { return Number.parseInt(v); }));
+        .map(function (r) {
+        return r.split(/\s+/).map(function (s) { return Number.parseInt(s); });
     });
-}
-function day2Algorithm() {
-    parseInput();
-    var maxDist = 3;
-    var minDist = 1;
-    var accum = 0;
-    fileRows.forEach(function (r) {
-        var desc = r[0] - r[1] < 0;
-        var safe = true;
-        for (var i = 0; i < r.length - 1; ++i) {
-            var diff = r[i] - r[i + 1];
-            if ((diff < 0 && !desc) || (diff > 0 && desc))
-                safe = false;
-            diff = Math.abs(diff);
-            if (diff < 1 || diff > 3)
-                safe = false;
-        }
-        if (safe)
-            accum++;
-    });
-    console.log(accum);
-}
-function getLocalMonotonity(list) {
-    var result = [0, 0];
-    for (var i = 0; i < list.length - 1; ++i) {
-        if (list[i] - list[i + 1] > 0)
-            result[1]++;
-        else if (list[i] - list[i + 1] < 0)
-            result[0]++;
-    }
     return result;
 }
-function day2Algorithm2() {
-    parseInput();
-    var maxDist = 3;
-    var minDist = 1;
-    var accum = 0;
-    var asc = false;
-    fileRows.forEach(function (r) {
-        var result = getLocalMonotonity(r);
-        var ascCount = result[0];
-        var descCount = result[1];
-        var diff = Math.abs(ascCount - descCount);
-        if (diff < Math.max(ascCount, descCount) - 1)
-            return;
-        asc = ascCount > descCount;
-        accum++;
+function day2Algorithm() {
+    var reports = parseInput();
+    var maxDiff = 3;
+    var minDiff = 1;
+    var goodReportsCount = 0;
+    reports.forEach(function (r) {
+        var prevDesc = r[1] - r[0] < 0;
+        var desc = r[1] - r[0] < 0;
+        for (var levelIdx = 1; levelIdx < r.length; ++levelIdx) {
+            var levelDiff = Math.abs(r[levelIdx] - r[levelIdx - 1]);
+            desc = r[levelIdx] - r[levelIdx - 1] < 0;
+            if (desc != prevDesc)
+                return;
+            //If the report is bad we skip to the next one in the array
+            if (levelDiff > maxDiff || levelDiff < minDiff)
+                return;
+            prevDesc = desc;
+        }
+        goodReportsCount++;
     });
+    console.log(goodReportsCount);
 }
-// --- low ---
-// 249
-day2Algorithm2();
+day2Algorithm();
 //# sourceMappingURL=day2.js.map
