@@ -1,11 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var fs = require('fs');
-var file = fs.readFileSync('2024/input/day2Input.txt');
+var fs = require("fs");
+var file = fs.readFileSync("2024/input/day2Test.txt");
 var fileRows = new Array();
 var safeReports = new Array();
 function parseInput() {
-    file.toString().split(/\r?\n/).forEach(function (r) {
+    file
+        .toString()
+        .split(/\r?\n/)
+        .forEach(function (r) {
         fileRows.push(r.split(/\s+/).map(function (v) { return Number.parseInt(v); }));
     });
 }
@@ -30,5 +33,34 @@ function day2Algorithm() {
     });
     console.log(accum);
 }
-day2Algorithm();
+function getLocalMonotonity(list) {
+    var result = [0, 0];
+    for (var i = 0; i < list.length - 1; ++i) {
+        if (list[i] - list[i + 1] > 0)
+            result[1]++;
+        else if (list[i] - list[i + 1] < 0)
+            result[0]++;
+    }
+    return result;
+}
+function day2Algorithm2() {
+    parseInput();
+    var maxDist = 3;
+    var minDist = 1;
+    var accum = 0;
+    var asc = false;
+    fileRows.forEach(function (r) {
+        var result = getLocalMonotonity(r);
+        var ascCount = result[0];
+        var descCount = result[1];
+        var diff = Math.abs(ascCount - descCount);
+        if (diff < Math.max(ascCount, descCount) - 1)
+            return;
+        asc = ascCount > descCount;
+        accum++;
+    });
+}
+// --- low ---
+// 249
+day2Algorithm2();
 //# sourceMappingURL=day2.js.map
