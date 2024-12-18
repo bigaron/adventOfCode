@@ -39,32 +39,60 @@ function day2Algorithm(): void {
   console.log(goodReportsCount);
 }
 
+// a > b < c < d
+//
+
 function day2Algorithm2(): void {
-  const reports = parseInput();
+  let reports = parseInput();
   const maxDiff = 3;
   const minDiff = 1;
   let goodReportsCount = 0;
+  let tempReports = -1;
+  let usedProblemDampener = false;
 
   for (let reportIdx = 0; reportIdx < reports.length; ++reportIdx) {
     let r = reports[reportIdx];
-    let usedProblemDampener = false;
+    usedProblemDampener = tempReports > -1 ? usedProblemDampener : false;
     let prevDesc = r[1] - r[0] < 0;
     let desc = r[1] - r[0] < 0;
+    let safe = true;
 
     for (let levelIdx = 1; levelIdx < r.length; ++levelIdx) {
       let levelDiff = Math.abs(r[levelIdx] - r[levelIdx - 1]);
       desc = r[levelIdx] - r[levelIdx - 1] < 0;
-      if (desc != prevDesc && usedProblemDampener) break;
 
-      if (levelDiff > maxDiff || (levelDiff < minDiff && usedProblemDampener))
+      if (levelDiff > maxDiff || levelDiff < minDiff || desc != prevDesc) {
+        safe = false;
+        if (usedProblemDampener) {
+          break;
+        }
+
+        usedProblemDampener = true;
+        let withoutSingleValues = [] as Array<number[]>;
+        let numberOfTries = levelIdx > 1 ? 3 : 2;
+        tempReports = numberOfTries;
+
+        for (let i = 0; i < numberOfTries; ++i) {
+          let currentReport = [...r];
+          currentReport.splice(levelIdx - i, 1);
+          withoutSingleValues.push([...currentReport]);
+        }
+
+        reports.splice(reportIdx, 1, ...withoutSingleValues);
+        reportIdx--;
         break;
+      }
       prevDesc = desc;
     }
-
-    goodReportsCount++;
+    if (tempReports > -1) tempReports--;
+    if (safe) {
+      goodReportsCount++;
+      reportIdx += Math.max(tempReports + 1, 0);
+      tempReports = -1;
+    }
   }
 
   console.log(goodReportsCount);
 }
 
-day2Algorithm();
+day2Algorithm2();
